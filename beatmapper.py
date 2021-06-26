@@ -50,6 +50,7 @@ if __name__ == '__main__':
             beats = multiprocessing.Process(target=beat_counter, args=[bpm])
             input('Press any key to begin')
             file = open(filename.split('/')[-1].split('.')[0] + ".txt", "w")
+            file.write('bpm ' + bpm + '\n')
             started = True
             mp.start()
             beats.start()
