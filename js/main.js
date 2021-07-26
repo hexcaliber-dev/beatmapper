@@ -38,7 +38,7 @@ slider.addEventListener("input", function () {
 });
 
 // Hide controls until file uploaded
-// document.getElementById("show-on-file").style.display = "none";
+document.getElementById("show-on-file").style.display = "none";
 
 // Play button
 let button = document.getElementById("playbutton");
