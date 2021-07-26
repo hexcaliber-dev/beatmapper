@@ -15,9 +15,8 @@
     <link rel="manifest" href="site.webmanifest">
     <link rel="apple-touch-icon" href="icon.png">
     <!-- Place favicon.ico in the root directory -->
-
-    <link rel="stylesheet" href="css/normalize.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dropzone.min.css">
+    <link rel="stylesheet" href="css/main.css">
 
     <meta name="theme-color" content="#fafafa">
 </head>
@@ -25,9 +24,70 @@
 <body>
 
     <!-- Add your site or application content here -->
-    <p>Hello world! This is HTML5 Boilerplate.</p>
-    <script src="js/howler.min.js"></script>
+    <span><span class="title">Beatmapper</span> <span class="version">v0.2.0</span></span>
+    
+
+    <form
+      action="devnull"
+      class="dropzone"
+      id="drop">
+
+        <div id="template" class="file-row">
+            <!-- This is used as the file preview template -->
+            <!-- <div>
+                <span class="preview"><img data-dz-thumbnail /></span>
+            </div> -->
+            <span class="now-editing">
+                <b>Now Editing:</b> <span class="name" data-dz-name></span>
+            </span>
+            <strong class="error text-danger" data-dz-errormessage></strong>
+
+            <button data-dz-remove class="btn btn-danger delete">
+                <i class="glyphicon glyphicon-trash"></i>
+                <span>Remove</span>
+            </button>
+            <!-- <div>
+                <p class="size" data-dz-size></p>
+                <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>
+                </div>
+            </div> -->
+            <div>
+            <!-- <button class="btn btn-primary start">
+                <i class="glyphicon glyphicon-upload"></i>
+                <span>Start</span>
+            </button>
+            <button data-dz-remove class="btn btn-warning cancel">
+                <i class="glyphicon glyphicon-ban-circle"></i>
+                <span>Cancel</span>
+            </button> -->
+            
+            </div>
+        </div>
+    </form> 
+
+    <div id="container">
+        <div id="waveform"></div>
+    </div>
+
+    <span>zoom<input type="range" min="1" max="100" value="1" class="slider" id="zoomslider"></span>
+
+    <button class="btn btn-primary" data-action="play" id="playbutton">
+        Play/Pause
+    </button>
+
+    
+
+
+    <script src="js/wavesurfer.js"></script>
+    <script src="js/wavesurfer-markers.js"></script>
+    <script src="js/wavesurfer-cursor.js"></script>
     <script src="js/dropzone.js"></script>
+    <script src="js/main.js"></script>
 </body>
+
+
+
+
 
 </html>

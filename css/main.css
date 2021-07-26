@@ -1,0 +1,71 @@
+@font-face {
+    font-family: 'Nimbus Sans';
+    src: url("../static/NimbusSanL-Reg.otf") format("opentype");
+}
+
+@font-face {
+    font-family: 'Nimbus Sans';
+    font-weight: bold;
+    src: url("../static/NimbusSanL-Bol.otf") format("opentype");
+}
+
+html {
+    font-family: 'Nimbus Sans', serif;
+}
+
+#container {
+    position: relative;
+}
+
+.dz-button {
+    font-size: 20px !important;
+}
+
+.dropzone {
+    background-color: #B3D1B6;
+    border: dashed black 3px;
+    border-radius: 10px;
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.file-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    height: 10vh;
+    font-size: 20px;
+}
+
+
+
+.delete{
+    display:inline-block;
+    padding:0.5em 1.2em 0.3em 1.2em;
+    margin:0 0.1em 0.1em 0;
+    border:0.16em solid rgba(255,255,255,0);
+    border-radius:2em;
+    box-sizing: border-box;
+    text-decoration:none;
+    font-family: 'Nimbus Sans', sans-serif;
+    font-weight:300;
+    color:black;
+    font-weight: bold;
+    text-align:center;
+    transition: all 0.2s;
+    background-color: #FF8585;
+    margin: 20px;
+}
+.delete:hover{
+    border-color: black;
+}
+
+.title {
+    font-size: 500%;
+    font-weight: bold;
+}
+
+.version {
+    font-size: 125%;
+}
