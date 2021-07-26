@@ -1,25 +1,14 @@
+const MARKER_COLORS = ["#5797DB", "#FE8E48", "#EA7197"];
+let markers = {};
+
 var wavesurfer = WaveSurfer.create({
 	container: "#waveform",
 	height: 250,
-	barHeight: 3,
-    waveColor: "#44445F",
-    progressColor: "#2D7DD2",
+	barHeight: 2.5,
+	waveColor: "#44445F",
+	progressColor: "#2D7DD2",
 	plugins: [
-		WaveSurfer.markers.create({
-			markers: [
-				{
-					time: 5.5,
-					label: "V1",
-					color: "#ff990a",
-				},
-				{
-					time: 10,
-					label: "V2",
-					color: "#00ffcc",
-					position: "top",
-				},
-			],
-		}),
+		WaveSurfer.markers.create(),
 		WaveSurfer.cursor.create({
 			showTime: true,
 			opacity: 1,
@@ -47,31 +36,112 @@ slider.addEventListener("input", function () {
 	wavesurfer.zoom(slider.value);
 });
 
+// Hide controls until file uploaded
+// document.getElementById("show-on-file").style.display = "none";
+
 // Play button
 let button = document.getElementById("playbutton");
-button.addEventListener("click", wavesurfer.playPause.bind(wavesurfer));
+button.addEventListener("click", () => {
+	wavesurfer.playPause();
+	document.activeElement.blur();
+});
+document.addEventListener("keypress", (e) => {
+	if (e.code === "Space") {
+		wavesurfer.playPause();
+	}
+    if (e.code === "Digit1") {
+        createMarker(1);
+    }
+    if (e.code === "Digit2") {
+        createMarker(2);
+    }
+    if (e.code === "Digit3") {
+        createMarker(3);
+    }
+});
+document.getElementById("clear").addEventListener("click", () => {markers = {}; wavesurfer.clearMarkers();});
+document.getElementById("marker1").addEventListener("click", () => {createMarker(1);});
+document.getElementById("marker2").addEventListener("click", () => {createMarker(2);});
+document.getElementById("marker3").addEventListener("click", () => {createMarker(3);});
 
 // Dropzone
 Dropzone.options.drop = {
 	paramName: "file", // The name that will be used to transfer the file
 	maxFiles: 1,
 	acceptedFiles: "audio/*",
-    dictDefaultMessage: "Drop audio file here to get started!",
-    previewTemplate: previewTemplate,
-    previewsContainer: "#drop",
+	dictDefaultMessage: "Drop audio file here to get started!",
+	previewTemplate: previewTemplate,
+	previewsContainer: "#drop",
 	accept: function (file, done) {
 		console.log("uploaded " + file.name);
 		var reader = new FileReader();
-        console.log(file instanceof Blob);
 		reader.addEventListener("loadend", function (event) {
-            // let currUrl = URL.createObjectURL(new Blob([event.target.result], {type: file.type}))
-            // console.log(currUrl);
+			// let currUrl = URL.createObjectURL(new Blob([event.target.result], {type: file.type}))
+			// console.log(currUrl);
 			// wavesurfer.loadBlob(new Blob([event.target.result], {type: file.type}));
-            // wavesurfer.load('../static/animoe_test.mp3');
+			// wavesurfer.load('../static/animoe_test.mp3');
 		});
 		// reader.readAsBinaryString(file);
-        wavesurfer.loadBlob(file);
+		wavesurfer.loadBlob(file);
+        document.getElementById("show-on-file").style.display = "block";
 	},
 };
 
+function createMarker(type, time) {
+    if (time === undefined)
+        time = wavesurfer.getCurrentTime();
+    let id = uuidv4();
+    wavesurfer.markers.add({
+        time,
+        color: MARKER_COLORS[type-1],
+        label: time.toFixed(1),
+        position: (type === 1) ? "top" : "bottom"
+    })
+    markers[id] = {
+        time,
+        type,
+        beat: getBeat(time)
+    };
+    let newRow = document.getElementById("markertable").insertRow();
+    newRow.id = id;
+    [time.toFixed(2), getBeat(time), type].map((value) => {
+        let cell = newRow.insertCell();
+        cell.appendChild(document.createTextNode(value));
+    });
+    
+    let deleteBtn = newRow.insertCell();
+    deleteBtn.innerHTML = `<button class="remove" id="remove-${id}">Remove</button>`;
+    document.getElementById("remove-" + id).addEventListener("click", () => {
+        document.querySelector("#markertable tbody").removeChild(document.getElementById(id));
+        delete markers[id];
+        wavesurfer.clearMarkers();
+        for (let id in markers) {
+            wavesurfer.markers.add({
+                time: markers[id].time,
+                color: MARKER_COLORS[markers[id].type - 1],
+                label: markers[id].time.toFixed(1),
+                position: (markers[id].type === 1) ? "top" : "bottom"
+            });
+        }
+    });
+}
 
+function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+}
+
+function getQuantize() {
+    return document.getElementById("quantize").checked;
+}
+
+function getBpm() {
+    return document.getElementById("bpm").value;
+}
+
+function getBeat(time) {
+    let beat = time / (getBpm() / 60);
+    return (getQuantize()) ? Math.round(beat) : beat;
+}

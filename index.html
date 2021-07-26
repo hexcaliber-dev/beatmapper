@@ -1,59 +1,55 @@
-<!doctype html>
+<!DOCTYPE html>
 <html class="no-js" lang="">
+	<head>
+		<meta charset="utf-8" />
+		<title>Beatmapper</title>
+		<meta name="description" content="Beatmapper by Hexcaliber" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<head>
-    <meta charset="utf-8">
-    <title></title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta property="og:title" content="Beatmapper by Hexcaliber" />
+		<meta property="og:type" content="" />
+		<meta property="og:url" content="https://beatmapper.hexcaliber.dev" />
+		<meta property="og:image" content="static/icon.png" />
 
-    <meta property="og:title" content="">
-    <meta property="og:type" content="">
-    <meta property="og:url" content="">
-    <meta property="og:image" content="">
+		<!-- <link rel="manifest" href="site.webmanifest"> -->
+		<link rel="apple-touch-icon" href="static/icon.png" />
+		<link rel="icon" type="image/png" href="static/icon.png" />
+		<link rel="stylesheet" href="css/dropzone.min.css" />
+		<link rel="stylesheet" href="css/main.css" />
 
-    <link rel="manifest" href="site.webmanifest">
-    <link rel="apple-touch-icon" href="icon.png">
-    <!-- Place favicon.ico in the root directory -->
-    <link rel="stylesheet" href="css/dropzone.min.css">
-    <link rel="stylesheet" href="css/main.css">
+		<meta name="theme-color" content="#fafafa" />
+	</head>
 
-    <meta name="theme-color" content="#fafafa">
-</head>
+	<body>
+		<!-- Add your site or application content here -->
+		<span
+			><span class="title">Beatmapper</span>
+			<span class="version">v0.2.0</span></span
+		>
 
-<body>
-
-    <!-- Add your site or application content here -->
-    <span><span class="title">Beatmapper</span> <span class="version">v0.2.0</span></span>
-    
-
-    <form
-      action="devnull"
-      class="dropzone"
-      id="drop">
-
-        <div id="template" class="file-row">
-            <!-- This is used as the file preview template -->
-            <!-- <div>
+		<form action="devnull" class="dropzone" id="drop">
+			<div id="template" class="file-row">
+				<!-- This is used as the file preview template -->
+				<!-- <div>
                 <span class="preview"><img data-dz-thumbnail /></span>
             </div> -->
-            <span class="now-editing">
-                <b>Now Editing:</b> <span class="name" data-dz-name></span>
-            </span>
-            <strong class="error text-danger" data-dz-errormessage></strong>
+				<span class="now-editing">
+					<b>Now Editing:</b> <span class="name" data-dz-name></span>
+				</span>
+				<strong class="error text-danger" data-dz-errormessage></strong>
 
-            <button data-dz-remove class="btn btn-danger delete">
-                <i class="glyphicon glyphicon-trash"></i>
-                <span>Remove</span>
-            </button>
-            <!-- <div>
+				<button data-dz-remove class="btn btn-danger delete">
+					<i class="glyphicon glyphicon-trash"></i>
+					<span>Remove</span>
+				</button>
+				<!-- <div>
                 <p class="size" data-dz-size></p>
                 <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
                 <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>
                 </div>
             </div> -->
-            <div>
-            <!-- <button class="btn btn-primary start">
+				<div>
+					<!-- <button class="btn btn-primary start">
                 <i class="glyphicon glyphicon-upload"></i>
                 <span>Start</span>
             </button>
@@ -61,33 +57,68 @@
                 <i class="glyphicon glyphicon-ban-circle"></i>
                 <span>Cancel</span>
             </button> -->
-            
-            </div>
-        </div>
-    </form> 
+				</div>
+			</div>
+		</form>
 
-    <div id="container">
-        <div id="waveform"></div>
-    </div>
+		<div id="show-on-file">
+			<div id="container">
+				<div id="waveform"></div>
+			</div>
 
-    <span>zoom<input type="range" min="1" max="100" value="1" class="slider" id="zoomslider"></span>
+			<span class="control-panel">
+                <span class="padded">
+                    Zoom
+                    <input
+                        type="range"
+                        min="1"
+                        max="100"
+                        value="1"
+                        class="slider"
+                        id="zoomslider"
+                    />
+                </span>
 
-    <button class="btn btn-primary" data-action="play" id="playbutton">
-        Play/Pause
-    </button>
+                <span class="padded">
+                    <label for="bpm">BPM</label>
+                    <input type="number" id="bpm" name="bpm" value=100>
+                </span>
+                <span class="padded">
+                    <label for="quantize">Quantize</label>
+                    <input type="checkbox" id="quantize" name="quantize" checked>
+                </span>
 
-    
+			</span>
+			<div class="control-panel">
+				<button class="btn playpause" data-action="play" id="playbutton">
+					Play/Pause (Space)
+				</button>
+				<button class="btn" data-action="marker1" id="marker1">
+					Place Basic Marker (1)
+				</button>
+				<button class="btn" data-action="marker2" id="marker2">
+					Place Special Marker (2)
+				</button>
+				<button class="btn" data-action="marker3" id="marker3">
+					Place Ultimate Marker (3)
+				</button>
+				<button class="btn" id="clear">Clear All Markers</button>
+			</div>
+            <h2 class="center">Marker Table</h2>
+            <table id="markertable">
+                <tr>
+                  <th>Time</th>
+                  <th>Beat</th>
+                  <th>Type</th>
+                  <th>Remove</th>
+                </tr>
+            </table>
+		</div>
 
-
-    <script src="js/wavesurfer.js"></script>
-    <script src="js/wavesurfer-markers.js"></script>
-    <script src="js/wavesurfer-cursor.js"></script>
-    <script src="js/dropzone.js"></script>
-    <script src="js/main.js"></script>
-</body>
-
-
-
-
-
+		<script src="js/wavesurfer.js"></script>
+		<script src="js/wavesurfer-markers.js"></script>
+		<script src="js/wavesurfer-cursor.js"></script>
+		<script src="js/dropzone.js"></script>
+		<script src="js/main.js"></script>
+	</body>
 </html>

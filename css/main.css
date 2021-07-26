@@ -40,7 +40,7 @@ html {
 
 
 
-.delete{
+.btn {
     display:inline-block;
     padding:0.5em 1.2em 0.3em 1.2em;
     margin:0 0.1em 0.1em 0;
@@ -57,8 +57,22 @@ html {
     background-color: #FF8585;
     margin: 20px;
 }
-.delete:hover{
+.btn:hover{
     border-color: black;
+}
+
+.playpause {
+    background-color: #4ABF6B;
+}
+
+#marker1 {
+    background-color: #5797DB;
+}
+#marker2 {
+    background-color: #FE8E48 ;
+}
+#marker3 {
+    background-color: #EA7197;
 }
 
 .title {
@@ -68,4 +82,46 @@ html {
 
 .version {
     font-size: 125%;
+}
+
+.control-panel {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn:focus {
+    outline: none !important;
+}
+
+marker span {
+    transform: translateX(-25px) translateY(5px) rotateZ(90deg) ;
+    z-index: 1000;
+}
+
+.padded {
+    margin: 10px;
+}
+
+table {
+    border: 1px solid black;
+    width: 80%;
+    text-align: center;
+    align-self: center;
+    margin-left: 10%;
+    padding: 1px;
+}
+
+th {
+    border-bottom: 1px solid black;
+}
+
+th, tr {
+    padding: 2px;
+    margin: 2px;
+}
+
+.center {
+    text-align: center;
 }
