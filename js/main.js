@@ -201,7 +201,9 @@ function exportMarkers() {
     let contents = "bpm " + getBpm();
     for(let id in markerList) {
         let marker = markerList[id];
-        contents += `\nb${marker.beat} ${marker.type} ${document.getElementById("meta-" + id).value}`;
+		let meta = document.getElementById("meta-" + id).value;
+		meta = meta.replace(/\s+/g, ''); // remove all spaces from metadata
+        contents += `\nb${marker.beat} ${marker.type} ${meta}`;
     }
     download(fileName + ".txt", contents);
 }
