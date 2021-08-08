@@ -93,6 +93,10 @@ document.getElementById('marker-buttons').innerHTML = markerHtml;
 
 // Init keypress events
 document.addEventListener("keypress", (e) => {
+	if(document.activeElement.className === "metadata") {
+		return;
+	}
+
 	if (e.code === "Space") {
 		wavesurfer.playPause();
 	}
