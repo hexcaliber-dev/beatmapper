@@ -1,5 +1,40 @@
-const MARKER_COLORS = ["#5797DB", "#FE8E48", "#EA7197"];
-let markers = {};
+const MARKERS = {
+	1: {
+		color: "#5797DB",
+		id: "marker1",
+		keyCode: "Digit1",
+		label: "Place Basic Marker (1)"
+	},
+	2: {
+		color: "#FE8E48",
+		id: "marker2",
+		keyCode: "Digit2",
+		label: "Place Special Marker (2)"
+	},
+	3: {
+		color: "#EA7197",
+		id: "marker3",
+		keyCode: "Digit3",
+		label: "Place Ultimate Marker (3)"
+	},
+	4: {
+		color: "#A471AD",
+		id: "marker4",
+		keyCode: "Digit4",
+		label: "Place Spawn Marker (4)"
+	},
+}
+
+const TABLE_HEADERS = 
+`<tbody><tr>
+	<th>Time</th>
+	<th>Beat</th>
+	<th>Type</th>
+	<th>Metadata</th>
+	<th>Remove</th>
+</tr></tbody>`
+
+let markerList = {};
 let fileName = "";
 
 var wavesurfer = WaveSurfer.create({
@@ -46,42 +81,43 @@ button.addEventListener("click", () => {
 	wavesurfer.playPause();
 	document.activeElement.blur();
 });
+
+// Create marker buttons
+let markerHtml = "";
+for (let n in MARKERS) {
+	markerHtml += `<button class="btn" data-action="${MARKERS[n].id}" id="${MARKERS[n].id}" style="background-color: ${MARKERS[n].color}">
+	${MARKERS[n].label}
+</button>`
+}
+document.getElementById('marker-buttons').innerHTML = markerHtml;
+
+// Init keypress events
 document.addEventListener("keypress", (e) => {
 	if (e.code === "Space") {
 		wavesurfer.playPause();
 	}
-	if (e.code === "Digit1") {
-		createMarker(1);
+
+	for (let n in MARKERS) {
+		if (e.code === MARKERS[n].keyCode) {
+			createMarker(n);
+		}
 	}
-	if (e.code === "Digit2") {
-		createMarker(2);
-	}
-	if (e.code === "Digit3") {
-		createMarker(3);
-	}
-});
-document.getElementById("clear").addEventListener("click", () => {
-	markers = {};
-	wavesurfer.clearMarkers();
-	document.getElementById("markertable").innerHTML = `<tbody><tr>
-                                                        <th>Time</th>
-                                                        <th>Beat</th>
-                                                        <th>Type</th>
-                                                        <th>Remove</th>
-                                                    </tr>
-                                                    </tbody>`;
-});
-document.getElementById("marker1").addEventListener("click", () => {
-	createMarker(1);
-});
-document.getElementById("marker2").addEventListener("click", () => {
-	createMarker(2);
-});
-document.getElementById("marker3").addEventListener("click", () => {
-	createMarker(3);
 });
 
-// Dropzone
+for (let n in MARKERS) {
+	document.getElementById(MARKERS[n].id).addEventListener("click", () => createMarker(n));
+}
+
+
+// Init marker table
+document.getElementById("markertable").innerHTML = TABLE_HEADERS;
+document.getElementById("clear").addEventListener("click", () => {
+	markerList = {};
+	wavesurfer.clearMarkers();
+	document.getElementById("markertable").innerHTML = TABLE_HEADERS;
+});
+
+// Dropzone initialization
 Dropzone.options.drop = {
 	paramName: "file", // The name that will be used to transfer the file
 	maxFiles: 1,
@@ -92,14 +128,13 @@ Dropzone.options.drop = {
 	accept: function (file, done) {
 		console.log("uploaded " + file.name);
         fileName = file.name.split(".")[0];
-        
-		var reader = new FileReader();
-		reader.addEventListener("loadend", function (event) {
-			// let currUrl = URL.createObjectURL(new Blob([event.target.result], {type: file.type}))
-			// console.log(currUrl);
-			// wavesurfer.loadBlob(new Blob([event.target.result], {type: file.type}));
-			// wavesurfer.load('../static/animoe_test.mp3');
-		});
+		// var reader = new FileReader();
+		// reader.addEventListener("loadend", function (event) {
+		// 	// let currUrl = URL.createObjectURL(new Blob([event.target.result], {type: file.type}))
+		// 	// console.log(currUrl);
+		// 	// wavesurfer.loadBlob(new Blob([event.target.result], {type: file.type}));
+		// 	// wavesurfer.load('../static/animoe_test.mp3');
+		// });
 		// reader.readAsBinaryString(file);
 		wavesurfer.loadBlob(file);
 		document.getElementById("show-on-file").style.display = "block";
@@ -111,11 +146,11 @@ function createMarker(type, time) {
 	let id = uuidv4();
 	wavesurfer.markers.add({
 		time,
-		color: MARKER_COLORS[type - 1],
+		color: MARKERS[type].color,
 		label: time.toFixed(1),
 		position: type === 1 ? "top" : "bottom",
 	});
-	markers[id] = {
+	markerList[id] = {
 		time,
 		type,
 		beat: getBeat(time),
@@ -126,6 +161,9 @@ function createMarker(type, time) {
 		let cell = newRow.insertCell();
 		cell.appendChild(document.createTextNode(value));
 	});
+	
+	let metadata = newRow.insertCell();
+	metadata.innerHTML = `<input type="text" id="meta-${id}" class="metadata" name="meta-${id}">`;
 
 	let deleteBtn = newRow.insertCell();
 	deleteBtn.innerHTML = `<button class="remove" id="remove-${id}">Remove</button>`;
@@ -157,9 +195,9 @@ function getBeat(time) {
 
 function exportMarkers() {
     let contents = "bpm " + getBpm();
-    for(let id in markers) {
-        let marker = markers[id];
-        contents += `\nb${marker.beat} ${marker.type}`;
+    for(let id in markerList) {
+        let marker = markerList[id];
+        contents += `\nb${marker.beat} ${marker.type} ${document.getElementById("meta-" + id).value}`;
     }
     download(fileName + ".txt", contents);
 }
@@ -183,14 +221,14 @@ function removeMarker(id) {
 	document
 		.querySelector("#markertable tbody")
 		.removeChild(document.getElementById(id));
-	delete markers[id];
+	delete markerList[id];
 	wavesurfer.clearMarkers();
-	for (let id in markers) {
+	for (let id in markerList) {
 		wavesurfer.markers.add({
-			time: markers[id].time,
-			color: MARKER_COLORS[markers[id].type - 1],
-			label: markers[id].time.toFixed(1),
-			position: markers[id].type === 1 ? "top" : "bottom",
+			time: markerList[id].time,
+			color: MARKERS[markerList[id].type].color,
+			label: markerList[id].time.toFixed(1),
+			position: markerList[id].type === 1 ? "top" : "bottom",
 		});
 	}
 }

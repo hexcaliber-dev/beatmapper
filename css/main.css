@@ -125,3 +125,7 @@ th, tr {
 .center {
     text-align: center;
 }
+
+.metadata {
+    width: 90%;
+}
